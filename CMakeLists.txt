@@ -11,15 +11,32 @@ cmake_minimum_required(VERSION 3.26)
 # If you want to only build one target, make sure to install it manually:
 # cmake --build . --target _C
 # cmake --install . --component _C
-project(vllm_extensions LANGUAGES CXX)
+project(vllm_extensions LANGUAGES CXX CUDA)
 
 # Self Design
+cmake_parse_arguments(
+  ARG
+  ""
+  ""
+  "BUILD_COMMAND;OTHER_OPTIONS"
+  ${ARGN}
+)
+if(NOT ARG_BUILD_COMMAND)
+  set(ARG_BUILD_COMMAND "")  # 显式设为空字符串
+endif()
+
 set(VLLM_PYTHON_EXECUTABLE $ENV{VLLM_PYTHON_EXECUTABLE} CACHE STRING "Python executable")
 
 set(CMAKE_CUDA_ARCHITECTURES 89)
 
 set(CUDA_TOOLKIT_ROOT_DIR "/data1/jyj/micromamba/envs/vllm-ext/targets/x86_64-linux")
 set(CUDA_INCLUDE_DIRS "${CUDA_TOOLKIT_ROOT_DIR}/include")
+set(CUDA_RUNTIME_LIBRARY "${CUDA_TOOLKIT_ROOT_DIR}/lib")
+set(nvtx3_dir "/usr/local/cuda/include")
+
+
+set(kineto_LIBRARY "/data1/jyj/third_party/lib/libkineto.a")
+set(kineto_INCLUDE_DIR "/data1/jyj/third_party/include")
 
 # find_package()
 find_library(NVTOOLSEXT_LIB

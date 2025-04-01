@@ -147,6 +147,7 @@ class cmake_build_ext(build_ext):
         cmake_args = [
             '-DCMAKE_BUILD_TYPE={}'.format(cfg),
             '-DVLLM_TARGET_DEVICE={}'.format(VLLM_TARGET_DEVICE),
+            '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON'
             # '-DCMAKE_C_COMPILER=/data1/jyj/micromamba/envs/vllm/bin/gcc',
             # '-DCMAKE_CXX_COMPILER=/data1/jyj/micromamba/envs/vllm/bin/g++'
         ]
