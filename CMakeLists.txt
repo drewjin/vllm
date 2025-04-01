@@ -13,6 +13,31 @@ cmake_minimum_required(VERSION 3.26)
 # cmake --install . --component _C
 project(vllm_extensions LANGUAGES CXX)
 
+# Self Design
+set(VLLM_PYTHON_EXECUTABLE $ENV{VLLM_PYTHON_EXECUTABLE} CACHE STRING "Python executable")
+
+set(CMAKE_CUDA_ARCHITECTURES 89)
+
+set(CUDA_TOOLKIT_ROOT_DIR "/data1/jyj/micromamba/envs/vllm-ext/targets/x86_64-linux")
+set(CUDA_INCLUDE_DIRS "${CUDA_TOOLKIT_ROOT_DIR}/include")
+
+# find_package()
+find_library(NVTOOLSEXT_LIB
+    NAMES nvToolsExt libnvToolsExt.so.1
+    PATHS "${CUDA_TOOLKIT_ROOT_DIR}/lib"
+    NO_DEFAULT_PATH
+)
+if(NVTOOLSEXT_LIB)
+    add_library(CUDA::nvToolsExt SHARED IMPORTED)
+    set_target_properties(CUDA::nvToolsExt PROPERTIES
+        IMPORTED_LOCATION "${NVTOOLSEXT_LIB}"
+    )
+    message(STATUS "Found nvToolsExt: ${NVTOOLSEXT_LIB}")
+else()
+    message(FATAL_ERROR "nvToolsExt library not found.")
+endif()
+
+
 # CUDA by default, can be overridden by using -DVLLM_TARGET_DEVICE=... (used by setup.py)
 set(VLLM_TARGET_DEVICE "cuda" CACHE STRING "Target device backend for vLLM")
 
